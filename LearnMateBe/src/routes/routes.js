@@ -2,7 +2,7 @@ const express = require('express');
 const routerApi = express.Router();
 const { checkAccessToken, createRefreshToken, createJWT } = require('../middleware/JWTAction');
 const { addUser, getUserByUserId, getAllStudents, getAllUsers, blockUser, unblockUser, deleteUser } = require('../controller/User/UserController');
-const { apiLogin, apiRegister, verifyOtp, requestPasswordReset, resetPassword, changePassword, verifyAccountByLink } = require('../controller/Auth/AuthController');
+const { apiLogin, apiRegister, verifyOtp, requestPasswordReset, resetPassword, changePassword, verifyAccountByLink, resendVerificationEmail } = require('../controller/Auth/AuthController');
 const passport = require('passport');
 const { NewConversation, GetConversation } = require('../Socket controller/ConversationController');
 const { SendMessage, GetMessages, MarkMessagesAsSeen } = require('../Socket controller/MessageController');
@@ -63,6 +63,7 @@ routerApi.post('/decode-token', (req, res) => {
 //OTP
 routerApi.post('/verify-otp', verifyOtp);
 routerApi.get('/verify-account', verifyAccountByLink);
+routerApi.post('/resend-verification', resendVerificationEmail);
 //socket 
 routerApi.post('/conversation',checkAccessToken,NewConversation);
 routerApi.get('/conversation',checkAccessToken,GetConversation);

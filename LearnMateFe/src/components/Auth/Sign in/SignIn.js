@@ -42,6 +42,7 @@ const SignIn = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoadingLogin(true);
     try {
       let response = await ApiLogin(email, password);
       if (response.errorCode === 0) {
@@ -55,18 +56,55 @@ const SignIn = () => {
         if(checkRole && checkRole === 'student') {
           navigate('/');
         }
-        // navigate('/')
+      } else if (response.errorCode === 6) {
+        // Email not verified
+        toast.error(
+          <div>
+            <strong>Email chưa được xác thực!</strong><br/>
+            Vui lòng kiểm tra email và click vào link xác thực trước khi đăng nhập.<br/>
+            <button 
+              onClick={() => handleResendVerification(email)}
+              style={{marginTop: '10px', padding: '5px 10px', background: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer'}}
+            >
+              Gửi lại email xác thực
+            </button>
+          </div>,
+          { autoClose: 10000 }
+        );
+      } else if (response.errorCode === 3) {
+        toast.error(response.message);
+      } else if (response.errorCode === 2) {
+        toast.error("Email không tồn tại");
+      } else {
+        toast.error(response.message || "Đăng nhập thất bại");
       }
-      if (response.errorCode === 3) {
-        toast.error(response.message)
-      }
-      else {
-        toast.error(response.error)
-      }
-
-
     } catch (error) {
       console.error('Login error:', error);
+      toast.error("Lỗi kết nối. Vui lòng thử lại.");
+    } finally {
+      setIsLoadingLogin(false);
+    }
+  };
+
+  const handleResendVerification = async (email) => {
+    try {
+      // Call API to resend verification email
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:6060'}/resend-verification`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email })
+      });
+      
+      if (response.ok) {
+        toast.success("Email xác thực đã được gửi lại!");
+      } else {
+        toast.error("Không thể gửi lại email. Vui lòng thử lại sau.");
+      }
+    } catch (error) {
+      console.error('Resend verification error:', error);
+      toast.error("Lỗi khi gửi lại email xác thực.");
     }
   };
 

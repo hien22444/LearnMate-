@@ -5,7 +5,7 @@ import { store } from '../redux/store';
 
 
 const instance = axios.create({
-    baseURL: 'https://learnmatebe.onrender.com/',
+    baseURL: process.env.REACT_APP_API_URL || 'http://localhost:6060/',
     withCredentials: true,
 });
 

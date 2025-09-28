@@ -10,8 +10,9 @@ const transporter = nodemailer.createTransport(
         }
     }
 )
-const sendMail = (to, subject, otp) => {
-  const htmlContent = `
+const sendMail = (to, subject, content) => {
+  // If content is already HTML, use it directly, otherwise create OTP template
+  const htmlContent = content.includes('<div') ? content : `
   <div style="background-color: #f2f4f6; padding: 40px 0; font-family: 'Segoe UI', sans-serif;">
     <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
       <div style="padding: 30px 40px; text-align: center;">
@@ -19,7 +20,7 @@ const sendMail = (to, subject, otp) => {
         <p style="font-size: 16px; color: #555555;">Cảm ơn bạn đã đăng ký. Vui lòng sử dụng mã OTP bên dưới để xác thực email:</p>
         <div style="margin: 30px 0;">
           <span style="display: inline-block; background-color: #f0f0f0; padding: 15px 30px; font-size: 28px; letter-spacing: 8px; color: #007bff; font-weight: bold; border-radius: 8px;">
-            ${otp}
+            ${content}
           </span>
         </div>
         <p style="font-size: 14px; color: #888888;">Mã OTP này sẽ hết hạn trong 5 phút.</p>      
@@ -30,11 +31,21 @@ const sendMail = (to, subject, otp) => {
   </div>
   `;
 
-  transporter.sendMail({
-    from: `"SDN System" <${process.env.MAIL_SDN_USERNAME}>`,
-    to: to,
-    subject: subject,
-    html: htmlContent
+  return new Promise((resolve, reject) => {
+    transporter.sendMail({
+      from: `"SDN System" <${process.env.MAIL_SDN_USERNAME}>`,
+      to: to,
+      subject: subject,
+      html: htmlContent
+    }, (error, info) => {
+      if (error) {
+        console.error('Email sending error:', error);
+        reject(error);
+      } else {
+        console.log('Email sent successfully:', info.messageId);
+        resolve(info);
+      }
+    });
   });
 };
 module.exports ={sendMail}

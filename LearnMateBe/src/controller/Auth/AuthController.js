@@ -37,6 +37,14 @@ const apiLogin = async (req, res) => {
       });
     }
 
+    // Check if email is verified
+    if (!userRecord.verified) {
+      return res.status(200).json({
+        errorCode: 6,
+        message: 'Please verify your email before logging in. Check your email for verification link.'
+      });
+    }
+
     const payload = {
       id:userRecord._id,
       email: userRecord.email,
@@ -129,7 +137,13 @@ const apiRegister = async (req, res) => {
           <p style="margin-top:20px;color:#888;font-size:13px;">This link will expire in 5 minutes.</p>
         </div>
       `;
-      await sendMail(email, emailSubject, emailContent);
+      try {
+        await sendMail(email, emailSubject, emailContent);
+        console.log('Verification email sent successfully to:', email);
+      } catch (emailError) {
+        console.error('Failed to send verification email:', emailError);
+        // Don't fail registration if email fails, but log the error
+      }
 
       // ✅ Schedule account deletion if not verified in 5 minutes
       setTimeout(async () => {
@@ -233,7 +247,13 @@ const resendOTPVerificationCode = async (req, res) => {
     // Send the new OTP to the user's email
     const emailSubject = 'Your New OTP Verification Code';
     const emailContent = `Your new OTP code is: ${otp}. It will expire in 5 minutes.`;
-    await sendMail(email, emailSubject, emailContent);
+    try {
+      await sendMail(email, emailSubject, emailContent);
+      console.log('OTP email sent successfully to:', email);
+    } catch (emailError) {
+      console.error('Failed to send OTP email:', emailError);
+      throw emailError; // Re-throw for OTP resend since it's critical
+    }
 
     return res.status(200).json({
       errorCode: 0,
@@ -275,7 +295,13 @@ const requestPasswordReset = async (req, res) => {
     // Send email with reset link
     const emailSubject = 'Password Reset Request';
     const emailContent = `Click <a href="${resetLink}">here</a> to reset your password. This link will expire in 5 minute.`;
-    await sendMail(email, emailSubject, emailContent);
+    try {
+      await sendMail(email, emailSubject, emailContent);
+      console.log('Password reset email sent successfully to:', email);
+    } catch (emailError) {
+      console.error('Failed to send password reset email:', emailError);
+      throw emailError; // Re-throw for password reset since it's critical
+    }
 
     return res.status(200).json({
       errorCode: 0,
@@ -410,9 +436,67 @@ const verifyAccountByLink = async (req, res) => {
   }
 };
 
+const resendVerificationEmail = async (req, res) => {
+  try {
+    const { email } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({ errorCode: 1, message: 'Email is required' });
+    }
+
+    const userRecord = await user.findOne({ email });
+    if (!userRecord) {
+      return res.status(404).json({ errorCode: 2, message: 'User not found' });
+    }
+
+    if (userRecord.verified) {
+      return res.status(400).json({ errorCode: 3, message: 'Account is already verified' });
+    }
+
+    // Generate new verification token
+    const payload = { id: userRecord._id, email: userRecord.email };
+    const verifyToken = createJWTVerifyEmail(payload);
+    const verifyLink = `${process.env.FRONTEND_URL}/verify-account?token=${verifyToken}`;
+
+    const emailSubject = 'Verify Your Account - Resend';
+    const emailContent = `
+      <div style="font-family:sans-serif;max-width:500px;margin:auto;padding:20px;border:1px solid #eee;border-radius:8px;">
+        <h2 style="color:#333;">Xác thực tài khoản của bạn</h2>
+        <p>Xin chào ${userRecord.username}!</p>
+        <p>Bạn đã yêu cầu gửi lại email xác thực. Vui lòng click vào nút bên dưới để xác thực tài khoản:</p>
+        <a href="${verifyLink}" style="display:inline-block;margin-top:12px;padding:10px 20px;background-color:#4CAF50;color:white;text-decoration:none;border-radius:5px;">Xác thực tài khoản</a>
+        <p style="margin-top:20px;color:#888;font-size:13px;">Link này sẽ hết hạn trong 5 phút.</p>
+        <p style="margin-top:10px;color:#666;font-size:12px;">Nếu bạn không yêu cầu email này, vui lòng bỏ qua.</p>
+      </div>
+    `;
+
+    try {
+      await sendMail(email, emailSubject, emailContent);
+      console.log('Resend verification email sent successfully to:', email);
+      
+      return res.status(200).json({
+        errorCode: 0,
+        message: 'Verification email has been resent successfully'
+      });
+    } catch (emailError) {
+      console.error('Failed to send resend verification email:', emailError);
+      return res.status(500).json({
+        errorCode: 4,
+        message: 'Failed to send verification email'
+      });
+    }
+  } catch (error) {
+    console.error('Resend verification email error:', error);
+    return res.status(500).json({
+      errorCode: 5,
+      message: 'An error occurred while resending verification email'
+    });
+  }
+};
+
 
 module.exports = {
   apiLogin,apiRegister,verifyOtp,resendOTPVerificationCode,
-  requestPasswordReset,resetPassword,changePassword,verifyAccountByLink
+  requestPasswordReset,resetPassword,changePassword,verifyAccountByLink,resendVerificationEmail
 };
 
