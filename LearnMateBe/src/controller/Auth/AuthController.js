@@ -336,9 +336,10 @@ const resetPassword = async (req, res) => {
 const changePassword = async (req, res) => {
   try {
     const userId = req.user.id; 
-    const { currentPassword, newPassword } = req.body;
+    const { currentPassword, oldPassword, newPassword } = req.body;
+    const passwordToCheck = currentPassword || oldPassword;
 
-    if (!currentPassword || !newPassword) {
+    if (!passwordToCheck || !newPassword) {
       return res.status(200).json({
         errorCode: 1,
         message: 'Current password and new password are required',
@@ -353,7 +354,7 @@ const changePassword = async (req, res) => {
       });
     }
 
-    const isPasswordValid = await bcrypt.compare(currentPassword, userRecord.password);
+    const isPasswordValid = await bcrypt.compare(passwordToCheck, userRecord.password);
     if (!isPasswordValid) {
       return res.status(200).json({
         errorCode: 3,

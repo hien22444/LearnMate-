@@ -2,7 +2,7 @@ const express = require('express');
 const routerApi = express.Router();
 const { checkAccessToken, createRefreshToken, createJWT } = require('../middleware/JWTAction');
 const { addUser, getUserByUserId, getAllStudents, getAllUsers, blockUser, unblockUser, deleteUser } = require('../controller/User/UserController');
-const { apiLogin, apiRegister, verifyOtp, requestPasswordReset, resetPassword, verifyAccountByLink } = require('../controller/Auth/AuthController');
+const { apiLogin, apiRegister, verifyOtp, requestPasswordReset, resetPassword, changePassword, verifyAccountByLink } = require('../controller/Auth/AuthController');
 const passport = require('passport');
 const { NewConversation, GetConversation } = require('../Socket controller/ConversationController');
 const { SendMessage, GetMessages, MarkMessagesAsSeen } = require('../Socket controller/MessageController');
@@ -76,6 +76,7 @@ routerApi.get('/students', getAllStudents);
 //reset password
 routerApi.post('/rqreset-password', requestPasswordReset);
 routerApi.post('/reset-password', resetPassword);
+routerApi.post('/change-password', checkAccessToken, changePassword);
 
 routerApi.get('/profile', checkAccessToken, getProfile);
 routerApi.put('/update-profile', checkAccessToken, updateProfile);
