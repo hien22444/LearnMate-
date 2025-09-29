@@ -36,6 +36,7 @@ import Profile from "./components/Profile/Profile";
 import ReviewCoursePage from "./components/Review/ReviewCoursePage";
 import BookingSchedule from "./components/Booking/Schedule/BookingSchedule";
 import TutorApplicationForm from './components/Profile/TutorApplicationForm';
+import CommunityPage from './components/Community/CommunityPage';
 
 
 const AppLayout = ({ children }) => {
@@ -202,6 +203,11 @@ const Layout = () => {
             }
           />
           <Route path="/verify-account" element={<VerifyAccount />} />
+          <Route path="/community" element={
+            <AppLayout>
+              <CommunityPage />
+            </AppLayout>
+          } />
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

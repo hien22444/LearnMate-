@@ -110,8 +110,8 @@ export default function SavedTutorsPage() {
                                             className="tutor-avatar"
                                             src={
                                                 tutor.user.image ||
-                                                "https://i.pravatar.cc/100?img=" +
-                                                (Math.floor(Math.random() * 70) + 1)
+                                                "https://via.placeholder.com/100x100/4A90E2/FFFFFF?text=" +
+                                                (tutor.user?.username?.charAt(0) || "G")
                                             }
                                             alt={tutor.user?.username || "Gia sư"}
                                         />

@@ -155,7 +155,7 @@ export default function BookingPage() {
         <img
           src={
             user?.image ||
-            `https://i.pravatar.cc/100?img=${Math.floor(Math.random() * 70) + 1}`
+            `https://via.placeholder.com/100x100/4A90E2/FFFFFF?text=${user?.username?.charAt(0) || "G"}`
           }
           alt="avatar"
           className="avatar"

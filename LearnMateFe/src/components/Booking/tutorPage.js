@@ -60,7 +60,11 @@ export default function TutorListPage() {
         },
       });
       // API trả về mảng các đối tượng tutor, ta chỉ cần ID của chúng
-      setSavedTutorIds(res.map((tutor) => tutor._id));
+      if (res && Array.isArray(res)) {
+        setSavedTutorIds(res.map((tutor) => tutor._id));
+      } else {
+        setSavedTutorIds([]);
+      }
     } catch (error) {
       console.error("Lỗi khi lấy danh sách gia sư đã lưu:", error);
       if (error.response && error.response.status === 401) {
@@ -341,8 +345,8 @@ export default function TutorListPage() {
                         className="tutor-avatar"
                         src={
                           tutor?.user?.image ||
-                          "https://i.pravatar.cc/100?img=" +
-                            (Math.floor(Math.random() * 70) + 1)
+                          "https://via.placeholder.com/100x100/4A90E2/FFFFFF?text=" +
+                            (tutor?.user?.username?.charAt(0) || "G")
                         }
                         alt={tutor.user?.username || "Gia sư"}
                       />

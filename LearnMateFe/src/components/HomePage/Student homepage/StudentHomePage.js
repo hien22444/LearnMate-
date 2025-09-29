@@ -6,7 +6,7 @@ import { doLogout } from "../../../redux/action/userAction";
 import { useDispatch, useSelector } from "react-redux";
 import { jwtDecode } from "jwt-decode";
 import Cookies from 'js-cookie'
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 const StudentHomePage = () => {
@@ -17,9 +17,9 @@ const StudentHomePage = () => {
 }, []);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const logout = async () => {
-    await dispatch(doLogout());
-  }
+  // const logout = async () => {
+  //   await dispatch(doLogout());
+  // }
   const isAuthenticated = useSelector(state => state.user.isAuthenticated);
   const user = useSelector(state => state.user);
   const role = useSelector((state) => state.user.account.role);
@@ -34,32 +34,37 @@ const StudentHomePage = () => {
       return true;
     }
   };
-  const decodeTokenData = async () => {
+  const decodeTokenData = useCallback(async () => {
     try {
       const token = Cookies.get('accessToken');
 
       if (!token || isTokenExpired(token)) {
         dispatch(doLogout());
-        navigate('/signin')
+        // Không tự động chuyển sang login, để user có thể xem trang chủ
+        // navigate('/signin')
       }
     } catch (error) {
       console.error('Error decoding token:', error);
       dispatch(doLogout());
     }
-  };
+  }, [dispatch]);
   useEffect(() => {
     document.title = "LearnMate";
   }, [isAuthenticated]);
 
   useEffect(() => {
-    decodeTokenData();
-  }, [dispatch])
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      logout();
+    // Chỉ kiểm tra token khi user đã đăng nhập
+    if (isAuthenticated) {
+      decodeTokenData();
     }
-  }, [isAuthenticated, dispatch]);
+  }, [isAuthenticated, dispatch, decodeTokenData])
+
+  // Bỏ logic logout tự động khi chưa đăng nhập
+  // useEffect(() => {
+  //   if (!isAuthenticated) {
+  //     logout();
+  //   }
+  // }, [isAuthenticated, dispatch]);
 
   return (
     <div className="home-container">
@@ -74,25 +79,26 @@ const StudentHomePage = () => {
         </nav>
         <div className="right-section">
           <LangLogin />
-          <div className="profile-dropdown">
-            <img
-              src={user?.account?.image || "https://i.pravatar.cc/40"}
-              alt="avatar"
-              className="avatar"
-              onClick={() =>
-                document
-                  .querySelector(".dropdown-menu")
-                  ?.classList.toggle("show")
-              }
-            />
-            <div className="dropdown-menu">
-              <button onClick={() => navigate('/profile')}>Trang cá nhân</button>
-              <button onClick={() => navigate('/user/paymentinfo')}>Thanh toán</button>
-              <button onClick={() => navigate('/user/bookinghistory')}>Lịch sử đặt lịch</button>
-              <button onClick={() => navigate('/user/my-courses')}>Khóa học của tôi</button>
-
+          {isAuthenticated ? (
+            <div className="profile-dropdown">
+              <img
+                src={user?.account?.image || "https://i.pravatar.cc/40"}
+                alt="avatar"
+                className="avatar"
+                onClick={() =>
+                  document
+                    .querySelector(".dropdown-menu")
+                    ?.classList.toggle("show")
+                }
+              />
+              <div className="dropdown-menu">
+                <button onClick={() => navigate('/profile')}>Trang cá nhân</button>
+                <button onClick={() => navigate('/user/paymentinfo')}>Thanh toán</button>
+                <button onClick={() => navigate('/user/bookinghistory')}>Lịch sử đặt lịch</button>
+                <button onClick={() => navigate('/user/my-courses')}>Khóa học của tôi</button>
+              </div>
             </div>
-          </div>
+          ) : null}
         </div>
       </header>
 
@@ -101,7 +107,13 @@ const StudentHomePage = () => {
       <section className="hero" data-aos="fade-up">
         <div className="hero-left">
           <strong><h1 style={{ color: "#121117" }}>Học nhanh hơn với gia sư giỏi nhất dành cho bạn.</h1></strong>
-          <button className="btn-primary" onClick={() => navigate('/tutor')}>Bắt đầu ngay →</button>
+          <button className="btn-primary" onClick={() => {
+            if (isAuthenticated) {
+              navigate('/tutor');
+            } else {
+              navigate('/signin');
+            }
+          }}>Bắt đầu ngay →</button>
         </div>
         <div className="hero-right">
           <div className="stacked-images">
@@ -183,7 +195,13 @@ const StudentHomePage = () => {
               <li>🚀 Phát triển sự nghiệp</li>
               <li>💸 Nhận thanh toán an toàn</li>
             </ul>
-            <button className="btn-primary">Trở thành gia sư →</button>
+            <button className="btn-primary" onClick={() => {
+              if (isAuthenticated) {
+                navigate('/tutor-application');
+              } else {
+                navigate('/signin');
+              }
+            }}>Trở thành gia sư →</button>
             <a href="#">Tìm hiểu cách hoạt động</a>
           </div>
         </section>
