@@ -85,10 +85,11 @@ exports.getSavedTutors = async (req, res) => {
     });
 
     // Trả về danh sách các đối tượng Tutor đã được populate
-    res.status(200).json(savedTutors.map(item => item.tutor));
+    const tutors = savedTutors.map(item => item.tutor).filter(tutor => tutor !== null);
+    res.status(200).json(tutors);
   } catch (error) {
     console.error('Lỗi khi lấy danh sách gia sư đã lưu:', error);
-    res.status(500).json({ message: 'Lỗi server.' });
+    res.status(500).json([]); // Trả về mảng rỗng thay vì error object
   }
 };
 
