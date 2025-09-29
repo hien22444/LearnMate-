@@ -1,9 +1,11 @@
 {
   "name": "sdnbe",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/server.js",
   "scripts": {
     "start": "node ./src/server.js",
+    "dev": "node ./src/server.js",
+    "build": "echo 'No build step required'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "CuongDo",

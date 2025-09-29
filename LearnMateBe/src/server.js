@@ -15,15 +15,24 @@ const router = require('./routes/tutorRoutes');
 const app = express();
 const port = process.env.PORT || 8888;
 const hostname = process.env.HOST_NAME || 'localhost';
-const server = http.createServer(app);
 
-const io = socketIo(server, {
-  cors: {
-    origin: process.env.CLIENT_URL,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true
-  }
-});
+// Tạo server chỉ khi không phải Vercel
+let server;
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  server = http.createServer(app);
+}
+
+// Tạo Socket.IO chỉ khi có server
+let io;
+if (server) {
+  io = socketIo(server, {
+    cors: {
+      origin: process.env.CLIENT_URL || 'https://learnmate-rust.vercel.app',
+      methods: ['GET', 'POST', 'PUT', 'DELETE'],
+      credentials: true
+    }
+  });
+}
 // Configure request body parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -43,7 +52,7 @@ app.use(passport.session()); // Enable passport session support
 
 // Configure CORS
 app.use(cors({
-  origin: 'https://learnmate-rust.vercel.app',
+  origin: process.env.CLIENT_URL || 'https://learnmate-rust.vercel.app',
   credentials: true,
 }));
 
@@ -54,24 +63,45 @@ app.use('/', routerApi);
 app.use('/api/tutor', router);
 
 app.get("/", (req, res) => {
-  res.json("Hello");
-})
+  res.json({
+    message: "LearnMate API is running!",
+    status: "success",
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send('Something broke!');
+  res.status(500).json({
+    error: 'Something broke!',
+    message: err.message
+  });
 });
-socketHandler(io);
+
+// Khởi tạo Socket.IO handler nếu có
+if (io) {
+  socketHandler(io);
+}
+
+// Khởi tạo ứng dụng
 (async () => {
   try {
     await connection();
     doLoginWGoogle();
-    server.listen(port, () => {
-      console.log(`Backend + Socket listening on port ${port}`);
-    });
-
-
+    
+    // Chỉ start server khi không phải Vercel
+    if (server) {
+      server.listen(port, () => {
+        console.log(`Backend + Socket listening on port ${port}`);
+      });
+    } else {
+      console.log('Running on Vercel - serverless mode');
+    }
   } catch (error) {
     console.error("Error connecting to the database:", error);
   }
 })();
+
+// Export app cho Vercel
+module.exports = app;

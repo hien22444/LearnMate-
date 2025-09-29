@@ -8,7 +8,7 @@ const dbState = [
   { value: 3, label: "disconnecting" }
 ];
 
-const dbUrl = process.env.DB_HOST;
+const dbUrl = process.env.DB_HOST || 'mongodb+srv://SDN392:23f5SeJ9KZyFY5ny@sdn392.oozdntu.mongodb.net/SDN392Mongo?retryWrites=true&w=majority&appName=SDN392';
 
 const connection = async () => {
   try {
