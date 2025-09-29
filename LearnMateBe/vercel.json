@@ -8,7 +8,111 @@
   ],
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "/api/(.*)",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/tutors",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/login",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/register",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/community",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/me/(.*)",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/admin/(.*)",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/payment/(.*)",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/booking/(.*)",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/schedule/(.*)",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/review/(.*)",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/notifications/(.*)",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/report/(.*)",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/auth/(.*)",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/google/(.*)",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/conversation",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/message/(.*)",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/profile",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/update-profile",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/students",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/user/(.*)",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/verify-otp",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/verify-account",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/rqreset-password",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/reset-password",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/change-password",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/",
       "dest": "src/server.js"
     }
   ],
