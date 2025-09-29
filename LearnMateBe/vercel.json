@@ -6,6 +6,112 @@
       "use": "@vercel/node"
     }
   ],
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/index.js"
+    },
+    {
+      "source": "/tutors",
+      "destination": "/index.js"
+    },
+    {
+      "source": "/community",
+      "destination": "/index.js"
+    },
+    {
+      "source": "/login",
+      "destination": "/index.js"
+    },
+    {
+      "source": "/register",
+      "destination": "/index.js"
+    },
+    {
+      "source": "/me/(.*)",
+      "destination": "/index.js"
+    },
+    {
+      "source": "/admin/(.*)",
+      "destination": "/index.js"
+    },
+    {
+      "source": "/payment/(.*)",
+      "destination": "/index.js"
+    },
+    {
+      "source": "/booking/(.*)",
+      "destination": "/index.js"
+    },
+    {
+      "source": "/schedule/(.*)",
+      "destination": "/index.js"
+    },
+    {
+      "source": "/review/(.*)",
+      "destination": "/index.js"
+    },
+    {
+      "source": "/notifications/(.*)",
+      "destination": "/index.js"
+    },
+    {
+      "source": "/report/(.*)",
+      "destination": "/index.js"
+    },
+    {
+      "source": "/auth/(.*)",
+      "destination": "/index.js"
+    },
+    {
+      "source": "/google/(.*)",
+      "destination": "/index.js"
+    },
+    {
+      "source": "/conversation",
+      "destination": "/index.js"
+    },
+    {
+      "source": "/message/(.*)",
+      "destination": "/index.js"
+    },
+    {
+      "source": "/profile",
+      "destination": "/index.js"
+    },
+    {
+      "source": "/update-profile",
+      "destination": "/index.js"
+    },
+    {
+      "source": "/students",
+      "destination": "/index.js"
+    },
+    {
+      "source": "/user/(.*)",
+      "destination": "/index.js"
+    },
+    {
+      "source": "/verify-otp",
+      "destination": "/index.js"
+    },
+    {
+      "source": "/verify-account",
+      "destination": "/index.js"
+    },
+    {
+      "source": "/rqreset-password",
+      "destination": "/index.js"
+    },
+    {
+      "source": "/reset-password",
+      "destination": "/index.js"
+    },
+    {
+      "source": "/change-password",
+      "destination": "/index.js"
+    }
+  ],
   "routes": [
     {
       "src": "/api/(.*)",
