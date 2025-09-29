@@ -2,118 +2,118 @@
   "version": 2,
   "builds": [
     {
-      "src": "src/server.js",
+      "src": "index.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "src/server.js"
+      "dest": "index.js"
     },
     {
       "src": "/tutors",
-      "dest": "src/server.js"
+      "dest": "index.js"
     },
     {
       "src": "/login",
-      "dest": "src/server.js"
+      "dest": "index.js"
     },
     {
       "src": "/register",
-      "dest": "src/server.js"
+      "dest": "index.js"
     },
     {
       "src": "/community",
-      "dest": "src/server.js"
+      "dest": "index.js"
     },
     {
       "src": "/me/(.*)",
-      "dest": "src/server.js"
+      "dest": "index.js"
     },
     {
       "src": "/admin/(.*)",
-      "dest": "src/server.js"
+      "dest": "index.js"
     },
     {
       "src": "/payment/(.*)",
-      "dest": "src/server.js"
+      "dest": "index.js"
     },
     {
       "src": "/booking/(.*)",
-      "dest": "src/server.js"
+      "dest": "index.js"
     },
     {
       "src": "/schedule/(.*)",
-      "dest": "src/server.js"
+      "dest": "index.js"
     },
     {
       "src": "/review/(.*)",
-      "dest": "src/server.js"
+      "dest": "index.js"
     },
     {
       "src": "/notifications/(.*)",
-      "dest": "src/server.js"
+      "dest": "index.js"
     },
     {
       "src": "/report/(.*)",
-      "dest": "src/server.js"
+      "dest": "index.js"
     },
     {
       "src": "/auth/(.*)",
-      "dest": "src/server.js"
+      "dest": "index.js"
     },
     {
       "src": "/google/(.*)",
-      "dest": "src/server.js"
+      "dest": "index.js"
     },
     {
       "src": "/conversation",
-      "dest": "src/server.js"
+      "dest": "index.js"
     },
     {
       "src": "/message/(.*)",
-      "dest": "src/server.js"
+      "dest": "index.js"
     },
     {
       "src": "/profile",
-      "dest": "src/server.js"
+      "dest": "index.js"
     },
     {
       "src": "/update-profile",
-      "dest": "src/server.js"
+      "dest": "index.js"
     },
     {
       "src": "/students",
-      "dest": "src/server.js"
+      "dest": "index.js"
     },
     {
       "src": "/user/(.*)",
-      "dest": "src/server.js"
+      "dest": "index.js"
     },
     {
       "src": "/verify-otp",
-      "dest": "src/server.js"
+      "dest": "index.js"
     },
     {
       "src": "/verify-account",
-      "dest": "src/server.js"
+      "dest": "index.js"
     },
     {
       "src": "/rqreset-password",
-      "dest": "src/server.js"
+      "dest": "index.js"
     },
     {
       "src": "/reset-password",
-      "dest": "src/server.js"
+      "dest": "index.js"
     },
     {
       "src": "/change-password",
-      "dest": "src/server.js"
+      "dest": "index.js"
     },
     {
       "src": "/",
-      "dest": "src/server.js"
+      "dest": "index.js"
     }
   ],
   "env": {
